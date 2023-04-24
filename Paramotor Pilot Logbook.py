@@ -202,14 +202,19 @@ root.config(menu=menu_bar)
 def save_flight_log():
     cursor.execute('''SELECT * FROM flight_data''')
     data = cursor.fetchall()
+    files = [('All Files', '*.*'),
+             ('Comma Separated Value (CSV, .csv)', '*.csv')]
     header = ['Flight Number', 'Date', 'Full Stop Landings', "Touch and Go's",
               'Distance Flown', 'Duration of Flight (Minutes)', 'Airport (Optional)', 'Notes']
-    file_path = fd.asksaveasfilename(defaultextension='.csv')
-    with open(file_path, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(header)
-        for row in data:
-            writer.writerow(row)
+    file_path = fd.asksaveasfilename(filetypes=files, defaultextension=files)
+    try:
+        with open(file_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(header)
+            for row in data:
+                writer.writerow(row)
+    except FileNotFoundError:
+        pass
 
 
 # Create menu bar with exit and save as csv options
