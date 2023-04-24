@@ -225,6 +225,20 @@ file_menu.add_command(label='Exit', command=close_app)
 menu_bar.add_cascade(label='File', menu=file_menu)
 root.config(menu=menu_bar)
 
+# Import flight log from .csv file
+
+
+def import_flight_log():
+    files = [('Comma Separated Value (CSV, .csv)', '*.csv')]
+    file_path = fd.askopenfilename(filetypes=files, defaultextension=files)
+    with open(file_path, newline='') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            cursor.execute('''INSERT INTO flight_data(date, full_stop_landings, touch_and_go, distance_flown, duration_of_flight, airport, notes)
+                    VALUES(?,?,?,?,?,?,?)''', (row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+        connection.commit()
+    display_data()
 # Show About popup
 
 
@@ -306,6 +320,7 @@ def show_help_popup():
 menu_bar = tk.Menu(root)
 file_menu = tk.Menu(menu_bar, tearoff=0)
 file_menu.add_command(label='Save Flight Log', command=save_flight_log)
+file_menu.add_command(label='Import Flight Log', command=import_flight_log)
 file_menu.add_command(label='Exit', command=close_app)
 menu_bar.add_cascade(label='File', menu=file_menu)
 edit_menu = tk.Menu(menu_bar, tearoff=0)
