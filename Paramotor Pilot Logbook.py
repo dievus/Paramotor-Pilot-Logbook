@@ -3,6 +3,7 @@ import sqlite3
 from tkinter import ttk
 import csv
 import tkinter.filedialog as fd
+from tkinter import messagebox
 
 # create connection to database
 connection = sqlite3.connect('flight_data.db')
@@ -23,33 +24,63 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS flight_data
 
 
 def add_flight_data():
-    # get data from user input
-    date = date_var.get()
-    full_stop = int(full_stop_var.get())
-    touch_go = int(touch_go_var.get())
-    distance = float(distance_var.get())
-    duration = float(duration_var.get())
-    airport_info = airport_info_var.get()
-    notes = notes_var.get()
+    try:
+        # get data from user input
+        date = date_var.get()
+        try:
+            full_stop = int(full_stop_var.get())
+        except tk.TclError:
+            messagebox.showerror(
+                'Input Error', 'Please enter a value for total number of full stop landings. If none, enter a zero (0).\n\nPlease try again.')
+        try:
+            touch_go = int(touch_go_var.get())
+        except tk.TclError:
+            messagebox.showerror(
+                'Input Error', "Please enter a value for total number of Touch and Go's. If none, enter a zero (0).\n\nPlease try again.")
+        try:
+            distance = float(distance_var.get())
+        except tk.TclError:
+            messagebox.showerror(
+                'Input Error', "Please enter the total distance flown.\n\nPlease try again.")
+        try:
+            duration = float(duration_var.get())
+        except tk.TclError:
+            messagebox.showerror(
+                'Input Error', "Please enter the total flight duration.\n\nPlease try again.")
+        airport_info = airport_info_var.get()
+        notes = notes_var.get()
+        date = ''.join(e for e in date if e.isnumeric()
+                       or e.isspace() or e in ['/'])
+        airport_info = ''.join(e for e in notes if e.isalnum(
+        ) or e.isspace() or e in ['!', '#', ',', '.', '?'])
+        notes = ''.join(e for e in notes if e.isalnum()
+                        or e.isspace() or e in ['!', '#', ',', '.', '?'])
+        # insert data into table
+        if not date:
+            messagebox.showerror(
+                'Date Missing Error', 'Please enter a date and try again.')
+        else:
+            cursor.execute('''INSERT INTO flight_data(date, full_stop_landings, touch_and_go, distance_flown, duration_of_flight, airport, notes)
+                            VALUES(?,?,?,?,?,?,?)''', (date, full_stop, touch_go, distance, duration, airport_info, notes))
+            connection.commit()
+            # clear user input fields
+            date_var.set('')
+            full_stop_var.set('')
+            touch_go_var.set('')
+            distance_var.set('')
+            duration_var.set('')
+            airport_info_var.set('')
+            notes_var.set('')
 
-    # insert data into table
-    cursor.execute('''INSERT INTO flight_data(date, full_stop_landings, touch_and_go, distance_flown, duration_of_flight, airport, notes)
-                    VALUES(?,?,?,?,?,?,?)''', (date, full_stop, touch_go, distance, duration, airport_info, notes))
-    connection.commit()
+            # update table display
+            display_data()
+    except UnboundLocalError:
+        pass
+    except tk.TclError:
+        messagebox.showerror(
+            'Data Input Error', 'You are either missing values, or used illegal characters. If the value is 0, enter 0.\n\nTry again.')
 
-    # clear user input fields
-    date_var.set('')
-    full_stop_var.set('')
-    touch_go_var.set('')
-    distance_var.set('')
-    duration_var.set('')
-    airport_info_var.set('')
-    notes_var.set('')
-
-    # update table display
-    display_data()
-
-# Undo latest entry in the flight log
+# function to undo the latest entry in the log
 
 
 def undo_last_entry():
