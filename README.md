@@ -19,7 +19,7 @@ You may find that Windows SmartScreen suggests not opening the file. This is bec
 Entering flight data is simple. All that is required is to enter the information as required, and click submit.
 
 ### Viewing Data
-The application will show the five most recent log entries in the interface. Additional entries can be viewed by exporting the log.
+The application will show the ten most recent log entries in the interface. Additional entries can be viewed by exporting the log.
 
 ### Importing Logbook Data
 Already have a logbook? See the "demo_logbook_file.csv" and add existing log data to the file as specified by the file headers.
