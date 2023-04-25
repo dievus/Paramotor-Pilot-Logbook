@@ -94,35 +94,107 @@ def undo_last_entry():
 # function to display flight data in table
 
 
+# def display_data():
+#     # delete previous table display
+#     for widget in data_frame.winfo_children():
+#         widget.destroy()
+
+#     # create new table display
+#     cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC LIMIT 10''')
+#     data = cursor.fetchall()
+
+#     # create table headers
+#     headers = ['Flight Number', 'Date', 'Number of Flights', "Touch and Go's",
+#                'Distance Flown (Miles)', 'Duration of Flight (Minutes)', 'Airport (Optional)', 'Notes']
+#     for i in range(len(headers)):
+#         header_label = ttk.Label(data_frame, text=headers[i])
+#         header_label.grid(row=0, column=i, padx=5, pady=5)
+
+#     # create table rows
+#     if data:
+#         for i in range(len(data)):
+#             for j in range(len(data[i])):
+#                 data_label = ttk.Label(data_frame, text=data[i][j])
+#                 data_label.grid(row=i+1, column=j, padx=5, pady=5)
+#         # set rowspan to the number of rows in data plus one for the header row
+#         row_span = len(data) + 1
+#     else:
+#         # if data is empty, set rowspan to 1
+#         ttk.Label(data_frame).grid(
+#             row=1, column=0)
+#         row_span = 1
+
+#     # create footer with sums
+#     full_stop_landings_sum = cursor.execute(
+#         '''SELECT SUM(full_stop_landings) FROM flight_data''').fetchone()[0]
+#     touch_and_go_sum = cursor.execute(
+#         '''SELECT SUM(touch_and_go) FROM flight_data''').fetchone()[0]
+#     distance_flown_sum = cursor.execute(
+#         '''SELECT SUM(distance_flown) FROM flight_data''').fetchone()[0]
+#     duration_of_flight_sum = cursor.execute(
+#         '''SELECT SUM(duration_of_flight) FROM flight_data''').fetchone()[0]
+#     if full_stop_landings_sum is None:
+#         full_stop_landings_sum = 0
+#     else:
+#         full_stop_landings_sum = (
+#             int(full_stop_landings_sum) + int(touch_and_go_sum))
+#     if duration_of_flight_sum is None:
+#         duration_of_flight_sum = 0
+#     else:
+#         duration_of_flight_sum = round(duration_of_flight_sum / 60, 2)
+#     if distance_flown_sum is None:
+#         distance_flown_sum = 0
+#     else:
+#         distance_flown_sum = round(distance_flown_sum, 2)
+#     footer_label = ttk.Label(
+#         data_frame, text=f'Total Flights: {full_stop_landings_sum} | Total Distance Flown: {distance_flown_sum} miles | Total Duration of Flight: {duration_of_flight_sum} hrs')
+#     footer_label.grid(row=row_span, column=0, columnspan=8, padx=5, pady=5)
+
+# function to display flight data using a tree
+
 def display_data():
-    # delete previous table display
+    # delete previous tree display
     for widget in data_frame.winfo_children():
         widget.destroy()
 
-    # create new table display
-    cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC LIMIT 10''')
+    # create new tree display
+    tree = ttk.Treeview(data_frame, columns=(
+        1, 2, 3, 4, 5, 6, 7, 8), show="headings", height=16)
+    tree.grid(row=1, column=0, columnspan=8, padx=5, pady=5)
+
+    # define tree headings
+    tree.heading(1, text="Entry", anchor=tk.CENTER)
+    tree.heading(2, text="Date", anchor=tk.CENTER)
+    tree.heading(3, text="Number of Flights", anchor=tk.CENTER)
+    tree.heading(4, text="Touch and Go's", anchor=tk.CENTER)
+    tree.heading(5, text="Distance Flown (Miles)", anchor=tk.CENTER)
+    tree.heading(6, text="Duration of Flight (Minutes)", anchor=tk.CENTER)
+    tree.heading(7, text="Airport (Optional)", anchor=tk.CENTER)
+    tree.heading(8, text="Notes", anchor=tk.CENTER)
+
+    # set column width
+    tree.column(1, width=100, anchor=tk.CENTER)
+    tree.column(2, width=75, anchor=tk.CENTER)
+    tree.column(3, width=105, anchor=tk.CENTER)
+    tree.column(4, width=100, anchor=tk.CENTER)
+    tree.column(5, width=150, anchor=tk.CENTER)
+    tree.column(6, width=175, anchor=tk.CENTER)
+    tree.column(7, width=150, anchor=tk.CENTER)
+    tree.column(8, width=500, anchor=tk.CENTER)
+
+    # create tree rows
+    cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC''')
     data = cursor.fetchall()
-
-    # create table headers
-    headers = ['Flight Number', 'Date', 'Number of Flights', "Touch and Go's",
-               'Distance Flown (Miles)', 'Duration of Flight (Minutes)', 'Airport (Optional)', 'Notes']
-    for i in range(len(headers)):
-        header_label = ttk.Label(data_frame, text=headers[i])
-        header_label.grid(row=0, column=i, padx=5, pady=5)
-
-    # create table rows
     if data:
-        for i in range(len(data)):
-            for j in range(len(data[i])):
-                data_label = ttk.Label(data_frame, text=data[i][j])
-                data_label.grid(row=i+1, column=j, padx=5, pady=5)
-        # set rowspan to the number of rows in data plus one for the header row
-        row_span = len(data) + 1
+        for row in data:
+            tree.insert("", tk.END, values=row, tags=('center',))
     else:
-        # if data is empty, set rowspan to 1
-        ttk.Label(data_frame).grid(
-            row=1, column=0)
-        row_span = 1
+        tree.insert("", tk.END, values=[
+                    "No data to display."]*8, tags=('center',))
+
+    # set column alignment to center
+    for column in range(8):
+        tree.column(column, anchor=tk.CENTER)
 
     # create footer with sums
     full_stop_landings_sum = cursor.execute(
@@ -148,7 +220,29 @@ def display_data():
         distance_flown_sum = round(distance_flown_sum, 2)
     footer_label = ttk.Label(
         data_frame, text=f'Total Flights: {full_stop_landings_sum} | Total Distance Flown: {distance_flown_sum} miles | Total Duration of Flight: {duration_of_flight_sum} hrs')
-    footer_label.grid(row=row_span, column=0, columnspan=8, padx=5, pady=5)
+    footer_label.grid(row=3, column=0, columnspan=8, padx=5, pady=5)
+
+    # set row alignment to center
+    tree.tag_configure('center', anchor=tk.CENTER)
+    # create a function to delete rows
+
+    def delete_row():
+        selection = tree.selection()
+        for item in selection:
+            # get id of the row to be deleted
+            row_id = tree.item(item)['values'][0]
+            # remove row from tree view
+            tree.delete(item)
+            # delete row from database
+            cursor.execute(
+                '''DELETE FROM flight_data WHERE id = ?''', (row_id,))
+            connection.commit()
+        display_data()
+
+    # add delete button
+    delete_button = ttk.Button(
+        data_frame, text='Delete Record', command=delete_row)
+    delete_button.grid(row=2, columnspan=8, pady=5, padx=5)
 
 # function to close the database connection and exit the application
 
