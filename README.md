@@ -28,7 +28,7 @@ Already have a logbook? See the "demo_logbook_file.csv" and add existing log dat
 Pilots can export their logbooks by clicking File -> Save Flight Log.
 
 ### Undoing an Entry
-If you find that you made a mistake, you can click Edit -> Remove Latest Entry
+If you find that you made a mistake, you can click Edit -> Remove Latest Entry, or by selecting a record(s) in the table and clicking the "Delete Record" button.
 
 ## Coming Soon
 
