@@ -1,6 +1,8 @@
 import tkinter as tk
 import sqlite3
 from tkinter import ttk
+import os.path
+import os
 import csv
 import tkinter.filedialog as fd
 from tkinter import messagebox
@@ -220,13 +222,6 @@ data_frame.grid(row=1, column=0, padx=10, pady=10)
 # display flight data in table
 display_data()
 
-# create menu bar with exit option
-menu_bar = tk.Menu(root)
-file_menu = tk.Menu(menu_bar, tearoff=0)
-file_menu.add_command(label='Exit', command=close_app)
-menu_bar.add_cascade(label='File', menu=file_menu)
-root.config(menu=menu_bar)
-
 # Save flight log as .csv file
 
 
@@ -244,17 +239,16 @@ def save_flight_log():
             writer.writerow(header)
             for row in data:
                 writer.writerow(row)
+        path = file_path
+        check_file = os.path.isfile(path)
+        if check_file:
+            messagebox.showinfo('File Saved', f"File saved as {file_path}.")
+        else:
+            messagebox.showerror(
+                'File Save Error', f"An error occurred when saving {file_path}.")
     except FileNotFoundError:
         pass
 
-
-# Create menu bar with exit and save as csv options
-menu_bar = tk.Menu(root)
-file_menu = tk.Menu(menu_bar, tearoff=0)
-file_menu.add_command(label='Save as CSV', command=save_flight_log)
-file_menu.add_command(label='Exit', command=close_app)
-menu_bar.add_cascade(label='File', menu=file_menu)
-root.config(menu=menu_bar)
 
 # Import flight log from .csv file
 
@@ -348,7 +342,29 @@ def show_help_popup():
     help_text.pack(padx=10, pady=10)
 
 
+def ko_fi_sponsor_popup():
+    ko_fi_window = tk.Toplevel(root)
+    ko_fi_window.title('Sponsor on Kofi')
+    ko_fi_window.iconbitmap('icons\\parachute.ico')
+    ko_fi_window.resizable(False, False)
+    ko_fi_window.geometry('500x300')
+    ko_fi_text = tk.Label(
+        ko_fi_window, text='''
+        Sponsor my work through a Ko-Fi Donation
+        ----------------------------------------------------------------------
+        While this project is provided free-of-charge, it does take time to 
+        develop and maintain. Should you wish to help sponsor the project, you
+        can do so at the following link:
+        
+        https://ko-fi.com/themayor
+        
+        Thank you for your consideration!
+        ''', justify='center')
+    ko_fi_text.pack(padx=10, pady=10)
+
+
 menu_bar = tk.Menu(root)
+root.config(menu=menu_bar)
 file_menu = tk.Menu(menu_bar, tearoff=0)
 file_menu.add_command(label='Save Flight Log', command=save_flight_log)
 file_menu.add_command(label='Import Flight Log', command=import_flight_log)
@@ -357,6 +373,9 @@ menu_bar.add_cascade(label='File', menu=file_menu)
 edit_menu = tk.Menu(menu_bar, tearoff=0)
 edit_menu.add_command(label='Remove Latest Entry', command=undo_last_entry)
 menu_bar.add_cascade(label='Edit', menu=edit_menu)
+sponsor_menu = tk.Menu(menu_bar, tearoff=0)
+sponsor_menu.add_command(label='Ko-Fi', command=ko_fi_sponsor_popup)
+menu_bar.add_cascade(label='Sponsor', menu=sponsor_menu)
 help_menu = tk.Menu(menu_bar, tearoff=0)
 help_menu.add_command(label='About', command=show_about_popup)
 help_menu.add_command(label='Help', command=show_help_popup)
