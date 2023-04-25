@@ -30,4 +30,4 @@ If you find that you made a mistake, you can click Edit -> Remove Latest Entry, 
 ## Coming Soon
 
 - [x] Import existing logbook into Paramotor Pilot Logbook database
-- [ ] Add some scrollbars to the interface that allow for a larger number of flights to be viewable
+- [X] Add some scrollbars to the interface that allow for a larger number of flights to be viewable
