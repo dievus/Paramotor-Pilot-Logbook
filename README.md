@@ -31,4 +31,4 @@ If you find that you made a mistake, you can click Edit -> Remove Latest Entry, 
 
 - [x] Import existing logbook into Paramotor Pilot Logbook database
 - [x] Add some scrollbars to the interface that allow for a larger number of flights to be viewable
-- [ ] Add check for deleting files.
+- [x] Add check for deleting files.
