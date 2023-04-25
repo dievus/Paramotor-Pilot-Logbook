@@ -53,7 +53,7 @@ def add_flight_data():
         notes = notes_var.get()
         date = ''.join(e for e in date if e.isnumeric()
                        or e.isspace() or e in ['/'])
-        airport_info = ''.join(e for e in notes if e.isalnum(
+        airport_info = ''.join(e for e in airport_info if e.isalnum(
         ) or e.isspace() or e in ['!', '#', ',', '.', '?'])
         notes = ''.join(e for e in notes if e.isalnum()
                         or e.isspace() or e in ['!', '#', ',', '.', '?'])
