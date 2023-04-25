@@ -100,7 +100,7 @@ def display_data():
         widget.destroy()
 
     # create new table display
-    cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC''')
+    cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC LIMIT 10''')
     data = cursor.fetchall()
 
     # create table headers
@@ -321,7 +321,7 @@ def show_help_popup():
         
         Flight Log Data
         ----------------------------------------------------------------------        
-        Flight logs are saved in a file called a 'SQLite3 database.' The five 
+        Flight logs are saved in a file called a 'SQLite3 database.' The ten 
         most recent flights are shown in the interface. Additional flights are 
         stored in the SQLite3 database.
         
