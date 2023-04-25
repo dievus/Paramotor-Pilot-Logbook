@@ -421,8 +421,10 @@ def show_help_popup():
         
         Removing Flight Log Entries
         ----------------------------------------------------------------------
-        The only way to remove an entry currently is to use the Edit -> 
-        Remove Latest Entry option in the menu. 
+        There are two ways to remove an entry currently.Selecting the entry or
+        entries in the table, and clicking the Delete Record button will 
+        delete records. Alternatively, you can click the Edit menu -> 
+        "Remove Latest Entry" option in the menu. 
         
         Flight Log Data
         ----------------------------------------------------------------------        
