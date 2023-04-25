@@ -86,10 +86,16 @@ def add_flight_data():
 
 
 def undo_last_entry():
-    cursor.execute(
-        '''DELETE FROM flight_data WHERE id = (SELECT MAX(id) FROM flight_data)''')
-    connection.commit()
-    display_data()
+    response_box = messagebox.askokcancel(
+        "Delete Record", "Do you really want to delete the record(s)? This cannot be reversed.")
+    if response_box:
+        cursor.execute(
+            '''DELETE FROM flight_data WHERE id = (SELECT MAX(id) FROM flight_data)''')
+        connection.commit()
+        display_data()
+    else:
+        pass
+
 
 # function to display flight data in table
 
@@ -227,17 +233,22 @@ def display_data():
     # create a function to delete rows
 
     def delete_row():
-        selection = tree.selection()
-        for item in selection:
-            # get id of the row to be deleted
-            row_id = tree.item(item)['values'][0]
-            # remove row from tree view
-            tree.delete(item)
-            # delete row from database
-            cursor.execute(
-                '''DELETE FROM flight_data WHERE id = ?''', (row_id,))
-            connection.commit()
-        display_data()
+        response_box = messagebox.askokcancel(
+            "Delete Record", "Do you really want to delete the record(s)? This cannot be reversed.")
+        if response_box:
+            selection = tree.selection()
+            for item in selection:
+                # get id of the row to be deleted
+                row_id = tree.item(item)['values'][0]
+                # remove row from tree view
+                tree.delete(item)
+                # delete row from database
+                cursor.execute(
+                    '''DELETE FROM flight_data WHERE id = ?''', (row_id,))
+                connection.commit()
+            display_data()
+        else:
+            pass
 
     # add delete button
     delete_button = ttk.Button(
