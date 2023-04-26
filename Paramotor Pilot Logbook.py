@@ -417,7 +417,7 @@ Sponsor my work through a Ko-Fi Donation
 While this project is provided free-of-charge, it does take time to 
 develop and maintain. Should you wish to help sponsor the project, 
 you can do so by scanning the QR code above, visiting the following 
-link or byclicking the button below.
+link or by clicking the button below.
         
 https://ko-fi.com/themayor
         
