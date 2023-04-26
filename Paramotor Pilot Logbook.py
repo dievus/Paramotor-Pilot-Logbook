@@ -6,6 +6,8 @@ import os
 import csv
 import tkinter.filedialog as fd
 from tkinter import messagebox
+import webbrowser
+from PIL import Image, ImageTk
 
 # create connection to database
 connection = sqlite3.connect('flight_data.db')
@@ -96,67 +98,6 @@ def undo_last_entry():
     else:
         pass
 
-
-# function to display flight data in table
-
-
-# def display_data():
-#     # delete previous table display
-#     for widget in data_frame.winfo_children():
-#         widget.destroy()
-
-#     # create new table display
-#     cursor.execute('''SELECT * FROM flight_data ORDER BY id DESC LIMIT 10''')
-#     data = cursor.fetchall()
-
-#     # create table headers
-#     headers = ['Flight Number', 'Date', 'Number of Flights', "Touch and Go's",
-#                'Distance Flown (Miles)', 'Duration of Flight (Minutes)', 'Airport (Optional)', 'Notes']
-#     for i in range(len(headers)):
-#         header_label = ttk.Label(data_frame, text=headers[i])
-#         header_label.grid(row=0, column=i, padx=5, pady=5)
-
-#     # create table rows
-#     if data:
-#         for i in range(len(data)):
-#             for j in range(len(data[i])):
-#                 data_label = ttk.Label(data_frame, text=data[i][j])
-#                 data_label.grid(row=i+1, column=j, padx=5, pady=5)
-#         # set rowspan to the number of rows in data plus one for the header row
-#         row_span = len(data) + 1
-#     else:
-#         # if data is empty, set rowspan to 1
-#         ttk.Label(data_frame).grid(
-#             row=1, column=0)
-#         row_span = 1
-
-#     # create footer with sums
-#     full_stop_landings_sum = cursor.execute(
-#         '''SELECT SUM(full_stop_landings) FROM flight_data''').fetchone()[0]
-#     touch_and_go_sum = cursor.execute(
-#         '''SELECT SUM(touch_and_go) FROM flight_data''').fetchone()[0]
-#     distance_flown_sum = cursor.execute(
-#         '''SELECT SUM(distance_flown) FROM flight_data''').fetchone()[0]
-#     duration_of_flight_sum = cursor.execute(
-#         '''SELECT SUM(duration_of_flight) FROM flight_data''').fetchone()[0]
-#     if full_stop_landings_sum is None:
-#         full_stop_landings_sum = 0
-#     else:
-#         full_stop_landings_sum = (
-#             int(full_stop_landings_sum) + int(touch_and_go_sum))
-#     if duration_of_flight_sum is None:
-#         duration_of_flight_sum = 0
-#     else:
-#         duration_of_flight_sum = round(duration_of_flight_sum / 60, 2)
-#     if distance_flown_sum is None:
-#         distance_flown_sum = 0
-#     else:
-#         distance_flown_sum = round(distance_flown_sum, 2)
-#     footer_label = ttk.Label(
-#         data_frame, text=f'Total Flights: {full_stop_landings_sum} | Total Distance Flown: {distance_flown_sum} miles | Total Duration of Flight: {duration_of_flight_sum} hrs')
-#     footer_label.grid(row=row_span, column=0, columnspan=8, padx=5, pady=5)
-
-# function to display flight data using a tree
 
 def display_data():
     # delete previous tree display
@@ -377,7 +318,7 @@ def show_about_popup():
     about_window.title('About')
     about_window.iconbitmap('icons\\parachute.ico')
     about_window.resizable(False, False)
-    about_window.geometry('400x300')
+    about_window.geometry('350x275')
     about_text = tk.Label(
         about_window, text='''Paramotor Pilot Logbook
         Version 1.0
@@ -395,79 +336,105 @@ def show_about_popup():
         notices with use, modification, patent, and
         other changes.
         ''', justify='center')
-    about_text.pack(padx=10, pady=10)
+    about_text.grid(row=0, columnspan=6, padx=5, pady=5)
 
 
 def show_help_popup():
     help_window = tk.Toplevel(root)
     help_window.title('Help')
     help_window.iconbitmap('icons\\parachute.ico')
-    help_window.geometry('425x600')
+    help_window.geometry('390x750')
     help_window.resizable(False, False)
+    help_text_header = tk.Label(
+        help_window, text='''
+Paramotor Pilot Logbook Help Manual''', font=('Helvetica', 10, 'bold'))
+    help_text_header.grid(row=0, columnspan=6, padx=5, pady=5)
+
     help_text = tk.Label(
         help_window, text='''
-        This is the help section for the Paramotor Pilot Logbook.
-        
-        Making Flight Log Entries
-        ----------------------------------------------------------------------
-        To make a flight log entry, enter the information for your flight 
-        as required in the "Enter Flight Data" section.
-        
-        Paramotor Pilot Logbook logs an individual flight as one that has one
-        takeoff and one landing. A touch-and-go is logged as one takeoff and
-        one landing. For flights with a takeoff and one more more touch and
-        go's, the flight will add the amount of takeoffs and landings to the
-        total amount of touch and go's.
-        
-        Removing Flight Log Entries
-        ----------------------------------------------------------------------
-        There are two ways to remove an entry currently.Selecting the entry or
-        entries in the table, and clicking the Delete Record button will 
-        delete records. Alternatively, you can click the Edit menu -> 
-        "Remove Latest Entry" option in the menu. 
-        
-        Flight Log Data
-        ----------------------------------------------------------------------        
-        Flight logs are saved in a file called a 'SQLite3 database.' The ten 
-        most recent flights are shown in the interface. Additional flights are 
-        stored in the SQLite3 database.
-        
-        Exporting Log Data
-        ----------------------------------------------------------------------
-        To export your file as a .CSV file, click on File -> Save Flight Log,
-        and then specify the name and location to save the file to. 
-        
-        Reporting Issues in Application
-        ----------------------------------------------------------------------
-        This is a free and open source project, and is developed as a 
-        side-project. As such, some issues are simply impossible to discover 
-        during development and the developer's individual use.
-        
-        Should you discover any issues, please file an issue on Github at
-        https://github.com/dievus/Paramotor-Pilot-Logbook.
+Making Flight Log Entries
+----------------------------------------------------------------------
+To make a flight log entry, enter the information for your flight 
+as required in the "Enter Flight Data" section.
+
+Paramotor Pilot Logbook logs an individual flight as one that has one
+takeoff and one landing. A touch-and-go is logged as one takeoff and
+one landing. For flights with a takeoff and one more more touch and
+go's, the flight will add the amount of takeoffs and landings to the
+total amount of touch and go's.
+
+Removing Flight Log Entries
+----------------------------------------------------------------------
+There are two ways to remove an entry currently.Selecting the entry or
+entries in the table, and clicking the Delete Record button will 
+delete records. Alternatively, you can click the Edit menu -> 
+"Remove Latest Entry" option in the menu. 
+
+Flight Log Data
+----------------------------------------------------------------------        
+Flight logs are saved in a file called a 'SQLite3 database.' The ten 
+most recent flights are shown in the interface. Additional flights are 
+stored in the SQLite3 database.
+
+Importing Log Data
+----------------------------------------------------------------------
+A boilerplate .CSV file is provided in the downloaded files that can
+be used for uploading existing log data in bulk. Simply add your log
+information, save, and then select File -> Import Log Data from the
+interface, and select the .CSV file previously saved.        
+
+Exporting Log Data
+----------------------------------------------------------------------
+To export your file as a .CSV file, click on File -> Save Flight Log,
+and then specify the name and location to save the file to. 
+
+Reporting Issues in Application
+----------------------------------------------------------------------
+This is a free and open source project, and is developed as a 
+side-project. As such, some issues are simply impossible to discover 
+during development and the developer's individual use.
+
+Should you discover any issues, please file an issue on Github at
+https://github.com/dievus/Paramotor-Pilot-Logbook.
         ''')
-    help_text.pack(padx=10, pady=10)
+    # help_text.pack(padx=10, pady=10)
+    help_text.grid(row=1, columnspan=6, padx=5, pady=5)
 
 
 def ko_fi_sponsor_popup():
     ko_fi_window = tk.Toplevel(root)
-    ko_fi_window.title('Sponsor on Kofi')
+    ko_fi_window.title('Sponsor This Project')
     ko_fi_window.iconbitmap('icons\\parachute.ico')
     ko_fi_window.resizable(False, False)
-    ko_fi_window.geometry('500x300')
+    ko_fi_window.geometry('380x425')
+    qr_image = Image.open("images\\qr-code.png")
+    qr_image = qr_image.resize((200, 200), Image.ANTIALIAS)
+    photo = ImageTk.PhotoImage(qr_image)
     ko_fi_text = tk.Label(
         ko_fi_window, text='''
-        Sponsor my work through a Ko-Fi Donation
-        ----------------------------------------------------------------------
-        While this project is provided free-of-charge, it does take time to 
-        develop and maintain. Should you wish to help sponsor the project, you
-        can do so at the following link:
+Sponsor my work through a Ko-Fi Donation
+----------------------------------------------------------------------
+While this project is provided free-of-charge, it does take time to 
+develop and maintain. Should you wish to help sponsor the project, 
+you can do so by scanning the QR code above, visiting the following 
+link or byclicking the button below.
         
-        https://ko-fi.com/themayor
+https://ko-fi.com/themayor
         
-        Thank you for your consideration!
-        ''', justify='center')
-    ko_fi_text.pack(padx=10, pady=10)
+Thank you for your consideration!
+        ''', image=photo, compound='top')
+    ko_fi_text.image = photo
+    ko_fi_text.grid(row=0, column=0, padx=5, pady=5)
+    ko_fi_button = tk.Button(
+        ko_fi_window, text='Sponsor This Project', command=sponsor_call_ko_fi, bd=1, justify='center')
+    ko_fi_button.grid(row=1, columnspan=7)
+
+
+# submit_btn.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+
+
+def sponsor_call_ko_fi():
+    webbrowser.open('https://ko-fi.com/themayor')
 
 
 menu_bar = tk.Menu(root)
@@ -481,7 +448,8 @@ edit_menu = tk.Menu(menu_bar, tearoff=0)
 edit_menu.add_command(label='Remove Latest Entry', command=undo_last_entry)
 menu_bar.add_cascade(label='Edit', menu=edit_menu)
 sponsor_menu = tk.Menu(menu_bar, tearoff=0)
-sponsor_menu.add_command(label='Ko-Fi', command=ko_fi_sponsor_popup)
+sponsor_menu.add_command(label='Sponsor This Project',
+                         command=ko_fi_sponsor_popup)
 menu_bar.add_cascade(label='Sponsor', menu=sponsor_menu)
 help_menu = tk.Menu(menu_bar, tearoff=0)
 help_menu.add_command(label='About', command=show_about_popup)
