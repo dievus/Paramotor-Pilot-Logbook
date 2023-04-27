@@ -32,3 +32,13 @@ If you find that you made a mistake, you can click Edit -> Remove Latest Entry, 
 - [x] Import existing logbook into Paramotor Pilot Logbook database
 - [x] Add some scrollbars to the interface that allow for a larger number of flights to be viewable
 - [x] Add check for deleting flight entries
+
+## Security Considerations
+
+Unfortunately, code-signing certificates can be cost-prohibitive for applications that are free and open-source like this. Worse, is that "Extended Validation" certificates that are approved by Defender SmartScreen are even more expensive. Paramotor Pilot Logbook uses a "self-signed" certificate, which is issued by the developer. 
+
+The Paramotor Pilot Logbook.exe file has the following SHA-256 hash value:
+
+- 0F83804EDE14E6DF338EDFA4A29358606984E251CBDF4D52AB92B3AE85C1BA38
+
+You can confirm that the file is legitimate by opening PowerShell, and running ```Get-FileHash "Paramotor Pilot Logbook.exe"```. If the value matches, it means that the file is legitimate and has not been tampered with.
