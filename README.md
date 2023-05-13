@@ -39,6 +39,6 @@ Unfortunately, code-signing certificates can be cost-prohibitive for application
 
 The Paramotor Pilot Logbook.exe file has the following SHA-256 hash value:
 
-- 0F83804EDE14E6DF338EDFA4A29358606984E251CBDF4D52AB92B3AE85C1BA38
+- 5647ABFBFDDB9D06639142E20D7D59C5F4EE6A8A60C3BEAC3650254D1F5FC26E
 
 You can confirm that the file is legitimate by opening PowerShell, and running ```Get-FileHash "Paramotor Pilot Logbook.exe"```. If the value matches, it means that the file is legitimate and has not been tampered with.
