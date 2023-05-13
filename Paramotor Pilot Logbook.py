@@ -25,7 +25,72 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS flight_data
                 notes TEXT)''')
 
 # function to add flight data to database
+def open_record_window(tree):
+    selected_item = tree.item(tree.focus())
+    record_values = selected_item['values']
 
+    # Create a new window
+    record_window = tk.Toplevel(root)
+    record_window.title('Flight Record Details')
+    record_window.iconbitmap('icons\\parachute.ico')
+
+    # Create a menu bar
+    menu_bar = tk.Menu(record_window)
+    record_window.config(menu=menu_bar)
+
+    # Create the "File" menu
+    file_menu = tk.Menu(menu_bar, tearoff=0)
+    menu_bar.add_cascade(label="Window", menu=file_menu)
+
+    # Add the "Close" option to the "File" menu
+    file_menu.add_command(label="Close", command=record_window.destroy)
+
+    # Display record details in the new window
+    record_label = ttk.LabelFrame(record_window, text='Flight Record Details')
+    record_label.pack(padx=0, pady=10)
+
+    # record_info = ttk.Label(record_label, text=f'Date: {record_values[1]}\n'
+    #                                              f'Number of Flights: {record_values[2]}\n'
+    #                                              f"Touch and Go's: {record_values[3]}\n"
+    #                                              f'Distance Flown (Miles): {record_values[4]}\n'
+    #                                              f'Duration of Flight (Minutes): {record_values[5]}\n'
+    #                                              f'Airport: {record_values[6]}')
+    # record_info.configure(justify='center')
+    # record_info.pack()
+    date_label = ttk.Label(record_label, text="Date:")
+    date_label.grid(row=0, column=0)
+    date = ttk.Label(record_label, text=f'{record_values[1]}')
+    date.grid(row=0, column=1)
+    flight_label = ttk.Label(record_label, text="Number of Flights:")
+    flight_label.grid(row=1, column=0)
+    flight = ttk.Label(record_label, text=f'{record_values[2]}')
+    flight.grid(row=1, column=1, padx=10)
+    touch_label = ttk.Label(record_label, text="Touch and Go's:")
+    touch_label.grid(row=2, column=0)
+    touch = ttk.Label(record_label, text=f'{record_values[3]}')
+    touch.grid(row=2, column=1, padx=10)
+    distance_label = ttk.Label(record_label, text="Distance Flown (Miles):")
+    distance_label.grid(row=3, column=0)
+    distance = ttk.Label(record_label, text=f'{record_values[4]}')
+    distance.grid(row=3, column=1, padx=10)
+    duration_label = ttk.Label(record_label, text="Duration of Flight (Minutes):")
+    duration_label.grid(row=4, column=0)
+    duration = ttk.Label(record_label, text=f'{record_values[5]}')
+    duration.grid(row=4, column=1, padx=10)
+    airport_label = ttk.Label(record_label, text="Airport:")
+    airport_label.grid(row=5, column=0)
+    airport = ttk.Label(record_label, text=f'{record_values[6]}')
+    airport.grid(row=5, column=1, padx=10)
+
+    # Create a labeled frame for flight data
+    data_frame = ttk.LabelFrame(record_window, text='Flight Notes')
+    data_frame.pack(padx=10, pady=10)
+
+    # Create a text widget inside the labeled frame to display the notes
+    notes_text = tk.Text(data_frame, wrap='word', width=80)
+    notes_text.insert(tk.END, record_values[7])
+    notes_text.configure(state='disabled')
+    notes_text.pack(fill='both', expand=True)
 
 def add_flight_data():
     try:
@@ -118,6 +183,7 @@ def display_data():
     tree.heading(6, text="Duration of Flight (Minutes)", anchor=tk.CENTER)
     tree.heading(7, text="Airport (Optional)", anchor=tk.CENTER)
     tree.heading(8, text="Notes", anchor=tk.CENTER)
+    tree.bind('<Double-1>', lambda event: open_record_window(tree))
 
     # set column width
     tree.column(1, width=100, anchor=tk.CENTER)
@@ -408,7 +474,7 @@ def ko_fi_sponsor_popup():
     ko_fi_window.resizable(False, False)
     ko_fi_window.geometry('380x425')
     qr_image = Image.open("images\\qr-code.png")
-    qr_image = qr_image.resize((200, 200), Image.ANTIALIAS)
+    qr_image = qr_image.resize((200, 200), Image.Resampling.LANCZOS)
     photo = ImageTk.PhotoImage(qr_image)
     ko_fi_text = tk.Label(
         ko_fi_window, text='''
@@ -435,6 +501,7 @@ Thank you for your consideration!
 
 def sponsor_call_ko_fi():
     webbrowser.open('https://ko-fi.com/themayor')
+
 
 
 menu_bar = tk.Menu(root)
